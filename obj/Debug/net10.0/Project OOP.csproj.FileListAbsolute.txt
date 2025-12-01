@@ -1,0 +1,28 @@
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/bin/Debug/net10.0/Project OOP
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/bin/Debug/net10.0/Project OOP.deps.json
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/bin/Debug/net10.0/Project OOP.runtimeconfig.json
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/bin/Debug/net10.0/Project OOP.dll
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/bin/Debug/net10.0/Project OOP.pdb
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/obj/Debug/net10.0/Project OOP.GeneratedMSBuildEditorConfig.editorconfig
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/obj/Debug/net10.0/Project OOP.AssemblyInfoInputs.cache
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/obj/Debug/net10.0/Project OOP.AssemblyInfo.cs
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/obj/Debug/net10.0/Project OOP.csproj.CoreCompileInputs.cache
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/obj/Debug/net10.0/Project OOP.dll
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/obj/Debug/net10.0/refint/Project OOP.dll
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/obj/Debug/net10.0/Project OOP.pdb
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/obj/Debug/net10.0/Project OOP.genruntimeconfig.cache
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Week 1/Project OOP/obj/Debug/net10.0/ref/Project OOP.dll
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/bin/Debug/net10.0/Project OOP
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/bin/Debug/net10.0/Project OOP.deps.json
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/bin/Debug/net10.0/Project OOP.runtimeconfig.json
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/bin/Debug/net10.0/Project OOP.dll
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/bin/Debug/net10.0/Project OOP.pdb
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/obj/Debug/net10.0/Project OOP.GeneratedMSBuildEditorConfig.editorconfig
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/obj/Debug/net10.0/Project OOP.AssemblyInfoInputs.cache
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/obj/Debug/net10.0/Project OOP.AssemblyInfo.cs
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/obj/Debug/net10.0/Project OOP.csproj.CoreCompileInputs.cache
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/obj/Debug/net10.0/Project OOP.dll
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/obj/Debug/net10.0/refint/Project OOP.dll
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/obj/Debug/net10.0/Project OOP.pdb
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/obj/Debug/net10.0/Project OOP.genruntimeconfig.cache
+/Users/knightmafia/Library/CloudStorage/OneDrive-ECPIUniversity/AOOP/Project OOP/obj/Debug/net10.0/ref/Project OOP.dll
