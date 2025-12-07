@@ -21,6 +21,7 @@ public enum QuoteStatus
 public class Quote : BookingDocument, IPriceable
 {
     public QuoteStatus Status { get; private set; }
+    public int Version { get; private set; } = 1;
     public List<QuoteItem> OutboundItems { get; } = new();
     public List<QuoteItem> ReturnTripItems { get; } = new();
     public IEnumerable<QuoteItem> AllItems => OutboundItems.Concat(ReturnTripItems);
@@ -32,6 +33,8 @@ public class Quote : BookingDocument, IPriceable
     public decimal Subtotal { get; private set; }
     public decimal Total { get; private set; }
     public string? Notes { get; private set; }
+    public DateTime? ReturnDateTime { get; private set; }
+    public string? ReturnPickupLocation { get; private set; }
 
     public Quote(string id, string customerId, DateTime? createdAt = null, string? notes = null)
         : base(id, customerId, createdAt)
@@ -69,6 +72,19 @@ public class Quote : BookingDocument, IPriceable
         }
 
         return removed;
+    }
+
+    public void ReplaceReturnTripItems(IEnumerable<QuoteItem> items)
+    {
+        ReturnTripItems.Clear();
+        ReturnTripItems.AddRange(items);
+        CalculateTotal();
+    }
+
+    public void SetReturnDetails(DateTime? when, string? pickupLocation)
+    {
+        ReturnDateTime = when;
+        ReturnPickupLocation = pickupLocation;
     }
 
     public decimal CalculateTotal()
@@ -116,7 +132,15 @@ public class Quote : BookingDocument, IPriceable
             ReturnApproved = false;
         }
 
+        Version++;
         Status = QuoteStatus.PendingCustomerReview;
+    }
+
+    // Used when loading from persistence to hydrate status/version.
+    public void LoadStatus(QuoteStatus status, int version)
+    {
+        Status = status;
+        Version = version;
     }
 
     public void UpdateNotes(string? notes)
@@ -142,6 +166,11 @@ public class Quote : BookingDocument, IPriceable
         if (HasReturnTrip)
         {
             builder.Append(" | Return Trip: Yes");
+        }
+        if (ReturnDateTime.HasValue)
+        {
+            var pickup = string.IsNullOrWhiteSpace(ReturnPickupLocation) ? "TBD" : ReturnPickupLocation;
+            builder.Append($" | Return When: {ReturnDateTime:g} @ {pickup}");
         }
         if (!string.IsNullOrWhiteSpace(Notes))
         {

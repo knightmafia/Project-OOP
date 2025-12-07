@@ -14,16 +14,18 @@ public class Reservation : BookingDocument, IPriceable
     public string ServiceSummary { get; }
     public decimal TotalPrice { get; }
     public string? Notes { get; }
+    public bool IsReturnTrip { get; }
     public DateTime ScheduledFor => Schedule.When;
     public decimal Total => TotalPrice;
 
-    public Reservation(string id, string quoteId, string customerId, TravelSchedule schedule, string serviceSummary, decimal totalPrice, string? notes = null, DateTime? createdAt = null)
+    public Reservation(string id, string quoteId, string customerId, TravelSchedule schedule, string serviceSummary, decimal totalPrice, bool isReturnTrip = false, string? notes = null, DateTime? createdAt = null)
         : base(id, customerId, createdAt)
     {
         QuoteId = quoteId;
         Schedule = schedule;
         ServiceSummary = serviceSummary;
         TotalPrice = totalPrice;
+        IsReturnTrip = isReturnTrip;
         Notes = notes;
     }
 
@@ -40,6 +42,7 @@ public class Reservation : BookingDocument, IPriceable
     private string BuildSummary()
     {
         var noteText = string.IsNullOrWhiteSpace(Notes) ? string.Empty : $" | Notes: {Notes}";
-        return $"#{Id} | Quote: {QuoteId} | Customer: {CustomerId} | When: {Schedule} | Total: {TotalPrice:C} | {ServiceSummary} | Created: {CreatedAt:g}{noteText}";
+        var segment = IsReturnTrip ? "Return" : "Outbound";
+        return $"#{Id} | Quote: {QuoteId} | Customer: {CustomerId} | Segment: {segment} | When: {Schedule} | Total: {TotalPrice:C} | {ServiceSummary} | Created: {CreatedAt:g}{noteText}";
     }
 }

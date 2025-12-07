@@ -16,11 +16,11 @@ public enum ServiceUnitType
 
 public class Service : IIdentifiable
 {
-    public string Id { get; }
-    public string Name { get; }
-    public string Description { get; }
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; }
+    public string Description { get; set; }
     public decimal Rate { get; }
-    public ServiceUnitType UnitType { get; }
+    public ServiceUnitType UnitType { get; set; }
     public bool IsActive { get; private set; }
 
     public Service(string id, string name, string description, decimal rate, ServiceUnitType unitType, bool isActive = true)
@@ -33,6 +33,14 @@ public class Service : IIdentifiable
         IsActive = isActive;
     }
 
+    public Service(string name, string description, decimal rate, ServiceUnitType unitType, bool isActive = true)
+    {
+        Name = name;
+        Description = description;
+        Rate = rate;
+        UnitType = unitType;
+        IsActive = isActive;
+    }
     public decimal PriceFor(int quantity)
     {
         return Rate * quantity;

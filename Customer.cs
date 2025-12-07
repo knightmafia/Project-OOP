@@ -9,23 +9,34 @@ namespace Project_OOP;
 
 public class Customer
 {
-    public string Id { get; }
-    public string FirstName { get; }
-    public string LastName { get; }
-    public string PhoneNumber { get; }
-    public string Email { get; }
+    public int Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Email { get; set; }
+    public DateTime CreatedAt { get; set; }
 
-    public Customer(string id, string firstName, string lastName, string phoneNumber, string email)
+    public Customer(int id, string firstName, string lastName, string phoneNumber, string email, DateTime createdAt)
     {
         Id = id;
         FirstName = firstName;
         LastName = lastName;
         PhoneNumber = phoneNumber;
         Email = email;
+        CreatedAt = createdAt;
     }
 
+    public Customer(string firstName, string lastName, string phoneNumber, string email, DateTime createdAt)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        PhoneNumber = phoneNumber;
+        Email = email;
+        CreatedAt = createdAt;
+    }
+    
     public override string ToString()
     {
-        return $"#{Id} | {FirstName} {LastName} | {PhoneNumber} | {Email}";
+        return $"#{Id} | {FirstName} {LastName} | {PhoneNumber} | {Email} | {CreatedAt}";
     }
 }
