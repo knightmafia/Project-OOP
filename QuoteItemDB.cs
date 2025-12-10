@@ -10,6 +10,7 @@ using Project_OOP;
 
 public static class QuoteItemDB
 {
+    // Ensures the QuoteItem table exists before use.
     public static void CreateTable(SqliteConnection conn)
     {
         const string query = @"
@@ -46,6 +47,16 @@ public static class QuoteItemDB
         command.ExecuteNonQuery();
     }
 
+    // Removes all items tied to a quote; useful when deleting a quote.
+    public static int DeleteItemsForQuote(SqliteConnection conn, string quoteId)
+    {
+        const string query = @"DELETE FROM QuoteItem WHERE QuoteId = @quoteId;";
+        using var command = new SqliteCommand(query, conn);
+        command.Parameters.AddWithValue("@quoteId", quoteId);
+        return command.ExecuteNonQuery();
+    }
+
+    // Fetches all quote items grouped by outbound/return trip.
     public static (List<QuoteItem> outbound, List<QuoteItem> returns) GetItemsForQuote(SqliteConnection conn, string quoteId)
     {
         const string query = @"

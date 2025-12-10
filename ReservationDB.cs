@@ -10,6 +10,7 @@ using Project_OOP;
 
 public static class ReservationDB
 {
+    // Ensures the Reservation table exists before use.
     public static void CreateTable(SqliteConnection conn)
     {
         const string query = @"
@@ -52,6 +53,56 @@ public static class ReservationDB
         command.ExecuteNonQuery();
     }
 
+    // Deletes a reservation by primary key; returns true when a row was removed.
+    public static bool DeleteReservation(SqliteConnection conn, string id)
+    {
+        const string query = @"DELETE FROM Reservation WHERE ID = @id;";
+        using var command = new SqliteCommand(query, conn);
+        command.Parameters.AddWithValue("@id", id);
+        return command.ExecuteNonQuery() > 0;
+    }
+
+    // Deletes all reservations tied to a quote (used when removing quotes).
+    public static int DeleteForQuote(SqliteConnection conn, string quoteId)
+    {
+        const string query = @"DELETE FROM Reservation WHERE QuoteId = @quoteId;";
+        using var command = new SqliteCommand(query, conn);
+        command.Parameters.AddWithValue("@quoteId", quoteId);
+        return command.ExecuteNonQuery();
+    }
+
+    // Retrieves a reservation by primary key; returns null when missing.
+    public static Reservation? GetReservationById(SqliteConnection conn, string id)
+    {
+        const string query = @"
+            SELECT ID, QuoteId, CustomerId, WhenAt, Location, Instructions, ServiceSummary, TotalPrice, IsReturnTrip, Notes, CreatedAt
+            FROM Reservation
+            WHERE ID = @id;";
+
+        using var command = new SqliteCommand(query, conn);
+        command.Parameters.AddWithValue("@id", id);
+        using var reader = command.ExecuteReader();
+        if (!reader.Read())
+        {
+            return null;
+        }
+
+        var quoteId = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
+        var customerId = reader.IsDBNull(2) ? string.Empty : reader.GetString(2);
+        var whenAt = reader.IsDBNull(3) ? DateTime.Now : reader.GetDateTime(3);
+        var location = reader.IsDBNull(4) ? string.Empty : reader.GetString(4);
+        var instructions = reader.IsDBNull(5) ? string.Empty : reader.GetString(5);
+        var summary = reader.IsDBNull(6) ? string.Empty : reader.GetString(6);
+        var totalPrice = reader.IsDBNull(7) ? 0m : reader.GetDecimal(7);
+        var isReturn = !reader.IsDBNull(8) && reader.GetInt32(8) == 1;
+        var notes = reader.IsDBNull(9) ? null : reader.GetString(9);
+        var createdAt = reader.IsDBNull(10) ? DateTime.Now : reader.GetDateTime(10);
+
+        var schedule = new TravelSchedule(whenAt, location, instructions);
+        return new Reservation(id, quoteId, customerId, schedule, summary, totalPrice, isReturn, notes, createdAt);
+    }
+
+    // Fetches all reservations ordered by scheduled time.
     public static List<Reservation> GetAllReservations(SqliteConnection conn)
     {
         const string query = @"

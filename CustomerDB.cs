@@ -10,6 +10,7 @@ using Project_OOP;
 
 public static class CustomerDB
 {
+    // Ensures the Customer table exists before use.
     public static void CreateTable(SqliteConnection conn)
     {
         const string query = @"
@@ -41,6 +42,41 @@ public static class CustomerDB
         command.ExecuteNonQuery();
     }
 
+    // Retrieves a single customer by primary key; returns null when not found.
+    public static Customer? GetCustomerById(SqliteConnection conn, int id)
+    {
+        const string query = @"
+            SELECT ID, FirstName, LastName, PhoneNumber, Email, CreatedAt
+            FROM Customer
+            WHERE ID = @id;";
+
+        using var command = new SqliteCommand(query, conn);
+        command.Parameters.AddWithValue("@id", id);
+        using var reader = command.ExecuteReader();
+        if (!reader.Read())
+        {
+            return null;
+        }
+
+        var first = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
+        var last = reader.IsDBNull(2) ? string.Empty : reader.GetString(2);
+        var phone = reader.IsDBNull(3) ? string.Empty : reader.GetString(3);
+        var email = reader.IsDBNull(4) ? string.Empty : reader.GetString(4);
+        var createdAt = reader.IsDBNull(5) ? DateTime.Now : reader.GetDateTime(5);
+
+        return new Customer(id, first, last, phone, email, createdAt);
+    }
+
+    // Deletes a customer row by primary key; returns true when a row was removed.
+    public static bool DeleteCustomer(SqliteConnection conn, int id)
+    {
+        const string query = @"DELETE FROM Customer WHERE ID = @id;";
+        using var command = new SqliteCommand(query, conn);
+        command.Parameters.AddWithValue("@id", id);
+        return command.ExecuteNonQuery() > 0;
+    }
+
+    // Fetches all customers ordered by their primary key.
     public static List<Customer> GetAllCustomers(SqliteConnection conn)
     {
         const string query = @"

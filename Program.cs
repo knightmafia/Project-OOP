@@ -34,13 +34,17 @@ public class OOPProject
             Console.WriteLine("\nMenu:");
             Console.WriteLine("1) List customers");
             Console.WriteLine("2) Add customer");
-            Console.WriteLine("3) List services");
-            Console.WriteLine("4) Add service");
-            Console.WriteLine("5) Create quote");
-            Console.WriteLine("6) Update quote status / send counter");
-            Console.WriteLine("7) Create reservation from accepted quote");
-            Console.WriteLine("8) List quotes");
-            Console.WriteLine("9) List reservations");
+            Console.WriteLine("3) Delete customer");
+            Console.WriteLine("4) List services");
+            Console.WriteLine("5) Add service");
+            Console.WriteLine("6) Delete service");
+            Console.WriteLine("7) Create quote");
+            Console.WriteLine("8) Update quote status / send counter");
+            Console.WriteLine("9) Delete quote");
+            Console.WriteLine("10) Create reservation from accepted quote");
+            Console.WriteLine("11) Delete reservation");
+            Console.WriteLine("12) List quotes");
+            Console.WriteLine("13) List reservations");
             Console.WriteLine("0) Exit");
 
             var choice = PromptInt("Select option", 0);
@@ -53,24 +57,36 @@ public class OOPProject
                     AddCustomer(conn);
                     break;
                 case 3:
-                    ListServices(conn);
+                    DeleteCustomer(conn);
                     break;
                 case 4:
-                    AddService(conn);
+                    ListServices(conn);
                     break;
                 case 5:
-                    CreateQuote(conn);
+                    AddService(conn);
                     break;
                 case 6:
-                    UpdateQuoteStatus(conn);
+                    DeleteService(conn);
                     break;
                 case 7:
-                    CreateReservation(conn);
+                    CreateQuote(conn);
                     break;
                 case 8:
-                    ListQuotes(conn);
+                    UpdateQuoteStatus(conn);
                     break;
                 case 9:
+                    DeleteQuote(conn);
+                    break;
+                case 10:
+                    CreateReservation(conn);
+                    break;
+                case 11:
+                    DeleteReservation(conn);
+                    break;
+                case 12:
+                    ListQuotes(conn);
+                    break;
+                case 13:
                     ListReservations(conn);
                     break;
                 case 0:
@@ -83,6 +99,7 @@ public class OOPProject
         }
     }
 
+    // Lists every customer currently stored.
     static void ListCustomers(SqliteConnection conn)
     {
         var customers = CustomerDB.GetAllCustomers(conn);
@@ -99,6 +116,7 @@ public class OOPProject
         }
     }
 
+    // Creates and persists a new customer row from console input.
     static void AddCustomer(SqliteConnection conn)
     {
         var first = Prompt("First Name", "First");
@@ -118,6 +136,36 @@ public class OOPProject
         }
     }
 
+    // Deletes a customer by primary key after confirmation.
+    static void DeleteCustomer(SqliteConnection conn)
+    {
+        ListCustomers(conn);
+        var id = PromptInt("Enter customer ID to delete", 0);
+        if (id <= 0)
+        {
+            Console.WriteLine("Invalid customer ID.");
+            return;
+        }
+
+        var customer = CustomerDB.GetCustomerById(conn, id);
+        if (customer == null)
+        {
+            Console.WriteLine("Customer not found.");
+            return;
+        }
+
+        var confirm = Prompt($"Delete customer #{customer.Id} ({customer.FirstName} {customer.LastName})? (y/n)", "n");
+        if (!confirm.StartsWith("y", StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine("Delete cancelled.");
+            return;
+        }
+
+        var deleted = CustomerDB.DeleteCustomer(conn, id);
+        Console.WriteLine(deleted ? "Customer deleted." : "Customer could not be deleted.");
+    }
+
+    // Lists every service available to be quoted.
     static void ListServices(SqliteConnection conn)
     {
         var services = ServiceDB.GetAllServices(conn);
@@ -134,6 +182,7 @@ public class OOPProject
         }
     }
 
+    // Creates and saves a service that can be quoted/reserved.
     static void AddService(SqliteConnection conn)
     {
         var name = Prompt("Service name", "New Service");
@@ -156,6 +205,36 @@ public class OOPProject
         }
     }
 
+    // Deletes a service by primary key after confirmation.
+    static void DeleteService(SqliteConnection conn)
+    {
+        ListServices(conn);
+        var idInput = PromptInt("Enter service ID to delete", 0);
+        if (idInput <= 0)
+        {
+            Console.WriteLine("Invalid service ID.");
+            return;
+        }
+
+        var service = ServiceDB.GetServiceById(conn, idInput);
+        if (service == null)
+        {
+            Console.WriteLine("Service not found.");
+            return;
+        }
+
+        var confirm = Prompt($"Delete service #{service.Id} ({service.Name})? (y/n)", "n");
+        if (!confirm.StartsWith("y", StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine("Delete cancelled.");
+            return;
+        }
+
+        var deleted = ServiceDB.DeleteService(conn, idInput);
+        Console.WriteLine(deleted ? "Service deleted." : "Service could not be deleted.");
+    }
+
+    // Gathers selection details and builds a quote with optional return trip.
     static void CreateQuote(SqliteConnection conn)
     {
         var customer = SelectCustomer(conn);
@@ -210,6 +289,7 @@ public class OOPProject
         }
     }
 
+    // Updates quote status flags, including sending a counter quote.
     static void UpdateQuoteStatus(SqliteConnection conn)
     {
         var quote = SelectQuote(conn);
@@ -241,6 +321,36 @@ public class OOPProject
         }
     }
 
+    // Deletes a quote and any related reservations/items by primary key.
+    static void DeleteQuote(SqliteConnection conn)
+    {
+        ListQuotes(conn);
+        var id = Prompt("Enter quote ID to delete (e.g., Q202512010930)", string.Empty);
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            Console.WriteLine("Quote ID cannot be empty.");
+            return;
+        }
+
+        var quote = QuoteDB.GetQuoteById(conn, id);
+        if (quote == null)
+        {
+            Console.WriteLine("Quote not found.");
+            return;
+        }
+
+        var confirm = Prompt($"Delete quote #{quote.Id} and related reservations/items? (y/n)", "n");
+        if (!confirm.StartsWith("y", StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine("Delete cancelled.");
+            return;
+        }
+
+        var deleted = QuoteDB.DeleteQuote(conn, id);
+        Console.WriteLine(deleted ? "Quote deleted." : "Quote could not be deleted.");
+    }
+
+    // Creates an outbound (and optionally return) reservation from an accepted quote.
     static void CreateReservation(SqliteConnection conn)
     {
         var quote = SelectQuote(conn, requireAccepted: true);
@@ -316,12 +426,43 @@ public class OOPProject
         }
     }
 
+    // Deletes a reservation by primary key after confirmation.
+    static void DeleteReservation(SqliteConnection conn)
+    {
+        ListReservations(conn);
+        var id = Prompt("Enter reservation ID to delete (e.g., RABC123)", string.Empty);
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            Console.WriteLine("Reservation ID cannot be empty.");
+            return;
+        }
+
+        var reservation = ReservationDB.GetReservationById(conn, id);
+        if (reservation == null)
+        {
+            Console.WriteLine("Reservation not found.");
+            return;
+        }
+
+        var confirm = Prompt($"Delete reservation #{reservation.Id}? (y/n)", "n");
+        if (!confirm.StartsWith("y", StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine("Delete cancelled.");
+            return;
+        }
+
+        var deleted = ReservationDB.DeleteReservation(conn, id);
+        Console.WriteLine(deleted ? "Reservation deleted." : "Reservation could not be deleted.");
+    }
+
+    // Lists quotes with their outbound/return items.
     static void ListQuotes(SqliteConnection conn)
     {
         var quotes = QuoteDB.GetAllQuotes(conn);
         ListQuotes(conn, quotes);
     }
 
+    // Overload that prints provided quotes, plus their items.
     static void ListQuotes(SqliteConnection conn, List<Quote> quotes)
     {
         if (quotes.Count == 0)
@@ -346,6 +487,7 @@ public class OOPProject
         }
     }
 
+    // Lists reservations currently stored.
     static void ListReservations(SqliteConnection conn)
     {
         var reservations = ReservationDB.GetAllReservations(conn);
@@ -363,6 +505,7 @@ public class OOPProject
     }
 
     // Selection helpers to reduce manual ID typing.
+    // Lets the user pick a customer by index.
     static Customer? SelectCustomer(SqliteConnection conn)
     {
         var customers = CustomerDB.GetAllCustomers(conn);
@@ -383,6 +526,7 @@ public class OOPProject
         return customers[index - 1];
     }
 
+    // Lets the user pick a service by index (or skip if allowed).
     static Service? SelectService(SqliteConnection conn, string prompt, bool allowEmpty = false)
     {
         var services = ServiceDB.GetAllServices(conn);
@@ -412,6 +556,7 @@ public class OOPProject
         return services[index - 1];
     }
 
+    // Lets the user pick a quote by index, optionally filtered to accepted only.
     static Quote? SelectQuote(SqliteConnection conn, bool requireAccepted = false)
     {
         var quotes = QuoteDB.GetAllQuotes(conn);

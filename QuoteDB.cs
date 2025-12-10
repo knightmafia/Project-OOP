@@ -10,6 +10,7 @@ using Project_OOP;
 
 public static class QuoteDB
 {
+    // Ensures the Quote table exists before use.
     public static void CreateTable(SqliteConnection conn)
     {
         const string query = @"
@@ -46,6 +47,63 @@ public static class QuoteDB
         command.ExecuteNonQuery();
     }
 
+    // Fetches a single quote by primary key, including its items.
+    public static Quote? GetQuoteById(SqliteConnection conn, string id)
+    {
+        const string query = @"
+            SELECT ID, CustomerId, CreatedAt, Status, Version, Notes, ReturnDateTime, ReturnPickupLocation
+            FROM Quote
+            WHERE ID = @id;";
+
+        using var command = new SqliteCommand(query, conn);
+        command.Parameters.AddWithValue("@id", id);
+        using var reader = command.ExecuteReader();
+        if (!reader.Read())
+        {
+            return null;
+        }
+
+        var customerId = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
+        var createdAt = reader.IsDBNull(2) ? DateTime.Now : reader.GetDateTime(2);
+        var statusValue = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
+        var version = reader.IsDBNull(4) ? 1 : reader.GetInt32(4);
+        var notes = reader.IsDBNull(5) ? null : reader.GetString(5);
+        var returnDateTime = reader.IsDBNull(6) ? (DateTime?)null : reader.GetDateTime(6);
+        var returnPickup = reader.IsDBNull(7) ? null : reader.GetString(7);
+
+        var quote = new Quote(id, customerId, createdAt, notes);
+        quote.LoadStatus(Enum.IsDefined(typeof(QuoteStatus), statusValue) ? (QuoteStatus)statusValue : QuoteStatus.Pending, version);
+        if (returnDateTime.HasValue || !string.IsNullOrWhiteSpace(returnPickup))
+        {
+            quote.SetReturnDetails(returnDateTime, returnPickup);
+        }
+
+        var items = QuoteItemDB.GetItemsForQuote(conn, id);
+        foreach (var item in items.outbound)
+        {
+            quote.AddItem(item, false);
+        }
+        foreach (var item in items.returns)
+        {
+            quote.AddItem(item, true);
+        }
+
+        return quote;
+    }
+
+    // Deletes a quote (and its related items/reservations) by primary key.
+    public static bool DeleteQuote(SqliteConnection conn, string id)
+    {
+        QuoteItemDB.DeleteItemsForQuote(conn, id);
+        ReservationDB.DeleteForQuote(conn, id);
+
+        const string query = @"DELETE FROM Quote WHERE ID = @id;";
+        using var command = new SqliteCommand(query, conn);
+        command.Parameters.AddWithValue("@id", id);
+        return command.ExecuteNonQuery() > 0;
+    }
+
+    // Fetches all quotes, hydrating status, return details, and items.
     public static List<Quote> GetAllQuotes(SqliteConnection conn)
     {
         const string query = @"
