@@ -13,7 +13,7 @@ public class OOPProject
     public static void Main(string[] args)
     {
         const string dbName = "Booking.db";
-        Console.WriteLine("\nEric Martinez, Week 4 Database Interactions GP\n");
+        Console.WriteLine("\nEric Martinez, Week 5 Final Project\n");
         using SqliteConnection conn = SQLiteDatabase.Connect(dbName);
         if (conn == null)
         {
@@ -27,7 +27,7 @@ public class OOPProject
         QuoteItemDB.CreateTable(conn);
         ReservationDB.CreateTable(conn);
 
-        Console.WriteLine("Welcome to the Transportation Quote console. Choose an option to begin.");
+        Console.WriteLine("Welcome to the Transportation Quote Manager. Choose an option to begin.");
         var running = true;
         while (running)
         {
