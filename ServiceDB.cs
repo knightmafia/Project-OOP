@@ -44,6 +44,28 @@ public static class ServiceDB
         command.ExecuteNonQuery();
     }
 
+    // Updates a service row by primary key; returns true when a row was changed.
+    public static bool UpdateService(SqliteConnection conn, int id, string name, string description, decimal rate, ServiceUnitType unitType, bool isActive)
+    {
+        const string query = @"
+            UPDATE Service
+            SET Name = @name,
+                Description = @desc,
+                Rate = @rate,
+                UnitType = @unit,
+                IsActive = @active
+            WHERE ID = @id;";
+
+        using var command = new SqliteCommand(query, conn);
+        command.Parameters.AddWithValue("@name", name);
+        command.Parameters.AddWithValue("@desc", description ?? string.Empty);
+        command.Parameters.AddWithValue("@rate", rate);
+        command.Parameters.AddWithValue("@unit", (int)unitType);
+        command.Parameters.AddWithValue("@active", isActive ? 1 : 0);
+        command.Parameters.AddWithValue("@id", id);
+        return command.ExecuteNonQuery() > 0;
+    }
+
     // Retrieves a service by primary key; returns null when absent.
     public static Service? GetServiceById(SqliteConnection conn, int id)
     {

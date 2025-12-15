@@ -3,6 +3,9 @@
 ## Overview
 Console-based booking assistant that manages customers, services, quotes (with optional return trips), and reservations against a SQLite database. Built to demonstrate CRUD, menus, and basic data relationships.
 
+## Screen Recording
+- Demo.mov
+
 ## Features
 - Customer and service management (create, list, delete by primary key)
 - Quote creation with outbound/return trip items, status updates, and counter-quotes
@@ -11,7 +14,7 @@ Console-based booking assistant that manages customers, services, quotes (with o
 - Inline comments on helpers to clarify function intent
 
 ## Technologies Used
-- C# / .NET console app (target `net10.0`)
+- C# / .NET console app (target `net8.0`)
 - SQLite via `Microsoft.Data.Sqlite`
 - Basic ADO.NET commands for CRUD
 
@@ -40,7 +43,7 @@ Console-based booking assistant that manages customers, services, quotes (with o
 ## How to Run
 
 ### Prerequisites
-- .NET SDK 8.0 or later (project targets `net10.0`; 8+ SDKs can build/run with preview enabled)
+- .NET SDK 8.0 or later
 - SQLite available on the host (database file is created automatically)
 
 ### Steps
@@ -52,7 +55,9 @@ Console-based booking assistant that manages customers, services, quotes (with o
 
 ## Menu Guide (CRUD)
 - Customers: list, add, delete by ID
+- Customers: update by ID
 - Services: list, add, delete by ID
+- Services: update by ID
 - Quotes: create, update status/send counter, delete by ID (removes related items/reservations), list
 - Reservations: create from accepted quotes, delete by ID, list
 
@@ -71,4 +76,43 @@ Console-based booking assistant that manages customers, services, quotes (with o
 - Add input validation and nicer formatting for currency/dates
 
 ## Author
-Developed by Eric Martinez for SDC320 coursework; freely modifiable for learning. 
+Developed by Eric Martinez.
+
+---
+
+## Project Summary
+### Project Description
+This project is a console-based transportation booking assistant that helps staff create customers and services, generate quotes (including optional return trips), and convert accepted quotes into reservations. Data is persisted in a SQLite database and managed through a menu-driven UI that demonstrates object-oriented design and full CRUD operations.
+
+### Project Tasks
+- **Task 1: Set up the development environment**
+- Install the .NET SDK and configure the project
+- Add SQLite package dependencies
+- **Task 2: Design the domain model**
+- Create classes for customers, services, quotes, quote items, and reservations
+- Apply OOP concepts (abstraction, composition, polymorphism, constructors)
+- **Task 3: Implement database persistence**
+- Create tables at startup
+- Implement create, read, update, and delete flows for each entity
+- **Task 4: Implement console UI**
+- Build menu navigation, input prompts, and formatted output
+- Add validation/confirmation for destructive actions
+- **Task 5: Document and deliver**
+- Write README usage and feature documentation
+- Record a short demonstration video and link it in the repository
+
+### Project Skills Learned
+- Object-oriented programming in C# (inheritance, interfaces, encapsulation)
+- ADO.NET-style SQLite CRUD with parameterized queries
+- Console UI design (menus, prompts, validation)
+- Structuring a small application for maintainability
+- Git/GitHub workflow and documentation for portfolio readiness
+
+### Language Used
+- **C# / .NET**
+
+### Development Process Used
+- **Iterative Development**: implementing features in small increments, testing each menu flow against the database as it was added.
+
+### Link to Project
+https://github.com/erimar2678ecpi/Project-OOP.git

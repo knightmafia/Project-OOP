@@ -45,6 +45,8 @@ public class OOPProject
             Console.WriteLine("11) Delete reservation");
             Console.WriteLine("12) List quotes");
             Console.WriteLine("13) List reservations");
+            Console.WriteLine("14) Update customer");
+            Console.WriteLine("15) Update service");
             Console.WriteLine("0) Exit");
 
             var choice = PromptInt("Select option", 0);
@@ -88,6 +90,12 @@ public class OOPProject
                     break;
                 case 13:
                     ListReservations(conn);
+                    break;
+                case 14:
+                    UpdateCustomer(conn);
+                    break;
+                case 15:
+                    UpdateService(conn);
                     break;
                 case 0:
                     running = false;
@@ -165,6 +173,33 @@ public class OOPProject
         Console.WriteLine(deleted ? "Customer deleted." : "Customer could not be deleted.");
     }
 
+    // Updates a customer record by primary key.
+    static void UpdateCustomer(SqliteConnection conn)
+    {
+        ListCustomers(conn);
+        var id = PromptInt("Enter customer ID to update", 0);
+        if (id <= 0)
+        {
+            Console.WriteLine("Invalid customer ID.");
+            return;
+        }
+
+        var customer = CustomerDB.GetCustomerById(conn, id);
+        if (customer == null)
+        {
+            Console.WriteLine("Customer not found.");
+            return;
+        }
+
+        customer.FirstName = Prompt("First Name", customer.FirstName);
+        customer.LastName = Prompt("Last Name", customer.LastName);
+        customer.PhoneNumber = Prompt("Phone", customer.PhoneNumber);
+        customer.Email = Prompt("Email", customer.Email);
+
+        var updated = CustomerDB.UpdateCustomer(conn, customer);
+        Console.WriteLine(updated ? "Customer updated." : "Customer could not be updated.");
+    }
+
     // Lists every service available to be quoted.
     static void ListServices(SqliteConnection conn)
     {
@@ -232,6 +267,36 @@ public class OOPProject
 
         var deleted = ServiceDB.DeleteService(conn, idInput);
         Console.WriteLine(deleted ? "Service deleted." : "Service could not be deleted.");
+    }
+
+    // Updates a service record by primary key.
+    static void UpdateService(SqliteConnection conn)
+    {
+        ListServices(conn);
+        var id = PromptInt("Enter service ID to update", 0);
+        if (id <= 0)
+        {
+            Console.WriteLine("Invalid service ID.");
+            return;
+        }
+
+        var service = ServiceDB.GetServiceById(conn, id);
+        if (service == null)
+        {
+            Console.WriteLine("Service not found.");
+            return;
+        }
+
+        var name = Prompt("Service name", service.Name);
+        var description = Prompt("Description", service.Description ?? string.Empty);
+        var rate = PromptDecimal("Rate", service.Rate);
+        var unitChoice = Prompt("Unit type (Flat/Hourly/PerMile)", service.UnitType.ToString());
+        var unitType = Enum.TryParse<ServiceUnitType>(unitChoice, true, out var parsed) ? parsed : service.UnitType;
+        var isActiveInput = Prompt("Is active? (y/n)", service.IsActive ? "y" : "n");
+        var isActive = isActiveInput.StartsWith("y", StringComparison.OrdinalIgnoreCase);
+
+        var updated = ServiceDB.UpdateService(conn, id, name, description, rate, unitType, isActive);
+        Console.WriteLine(updated ? "Service updated." : "Service could not be updated.");
     }
 
     // Gathers selection details and builds a quote with optional return trip.

@@ -42,6 +42,26 @@ public static class CustomerDB
         command.ExecuteNonQuery();
     }
 
+    // Updates a customer row by primary key; returns true when a row was changed.
+    public static bool UpdateCustomer(SqliteConnection conn, Customer c)
+    {
+        const string query = @"
+            UPDATE Customer
+            SET FirstName = @fname,
+                LastName = @lname,
+                PhoneNumber = @pnum,
+                Email = @eml
+            WHERE ID = @id;";
+
+        using var command = new SqliteCommand(query, conn);
+        command.Parameters.AddWithValue("@fname", c.FirstName);
+        command.Parameters.AddWithValue("@lname", c.LastName);
+        command.Parameters.AddWithValue("@pnum", c.PhoneNumber);
+        command.Parameters.AddWithValue("@eml", c.Email);
+        command.Parameters.AddWithValue("@id", c.Id);
+        return command.ExecuteNonQuery() > 0;
+    }
+
     // Retrieves a single customer by primary key; returns null when not found.
     public static Customer? GetCustomerById(SqliteConnection conn, int id)
     {
