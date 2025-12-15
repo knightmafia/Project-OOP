@@ -1,10 +1,10 @@
-# Transportation Quote & Reservation Console
+# Transportation Quote Manager
 
 ## Overview
 Console-based booking assistant that manages customers, services, quotes (with optional return trips), and reservations against a SQLite database. Built to demonstrate CRUD, menus, and basic data relationships.
 
 ## Screen Recording
-- Demo.mov
+- https://youtu.be/6mCmARenOKM
 
 ## Features
 - Customer and service management (create, list, delete by primary key)
